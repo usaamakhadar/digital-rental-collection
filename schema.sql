@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS organizations CASCADE;
 CREATE TABLE organizations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL,
-  currency_code VARCHAR(3) DEFAULT 'USD',
+  currency_code VARCHAR(10) DEFAULT 'USD',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE invoices (
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   lease_id UUID NOT NULL REFERENCES leases(id) ON DELETE CASCADE,
   amount NUMERIC(12, 2) NOT NULL,
-  currency_code VARCHAR(3) DEFAULT 'USD',
+  currency_code VARCHAR(10) DEFAULT 'USD',
   status VARCHAR(20) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'PAID', 'OVERDUE')),
   due_date DATE NOT NULL,
   
@@ -105,7 +105,7 @@ CREATE TABLE payments (
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   invoice_id UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
   amount NUMERIC(12, 2) NOT NULL,
-  currency_code VARCHAR(3) DEFAULT 'USD',
+  currency_code VARCHAR(10) DEFAULT 'USD',
   payment_method VARCHAR(50) NOT NULL, -- 'ZAAD', 'EDAHAB', 'CASH'
   provider_transaction_id VARCHAR(255) UNIQUE, -- Idempotency protection key
   paid_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE expenses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   landlord_id UUID NOT NULL REFERENCES landlords(id) ON DELETE CASCADE,
   amount NUMERIC(12, 2) NOT NULL,
-  currency_code VARCHAR(3) DEFAULT 'USD',
+  currency_code VARCHAR(10) DEFAULT 'USD',
   category VARCHAR(50) NOT NULL,
   description TEXT,
   expense_date DATE NOT NULL,
@@ -270,7 +270,7 @@ CREATE OR REPLACE FUNCTION process_payment(
 ) RETURNS VOID AS $$
 DECLARE
   v_org_id UUID;
-  v_currency VARCHAR(3);
+  v_currency VARCHAR(10);
 BEGIN
   -- Obtain organization_id and currency_code from landlords/invoices
   SELECT organization_id INTO v_org_id FROM landlords WHERE id = p_landlord_id;

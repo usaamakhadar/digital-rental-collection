@@ -2172,8 +2172,8 @@ export default function DashboardClient({
 
           {/* ================= SECTION 5: EXPENSES SECTION ================= */}
           {activeSection === 'expenses' && (
-            <div className="flex flex-col h-full w-full min-w-0 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-              <div className="p-6 border-b border-slate-100 shrink-0 bg-white z-10">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 w-full min-w-0 space-y-6">
+              <div className="border-b border-slate-100 pb-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
                     <h2 className="text-xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
@@ -2187,7 +2187,7 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              <div className="flex-1 overflow-auto p-4 sm:p-6 flex flex-col lg:flex-row gap-6 w-full min-w-0">
+              <div className="flex flex-col lg:flex-row gap-6 w-full min-w-0">
                 {/* Left Side: Expenses Table */}
                 <div className="flex-1 w-full min-w-0">
                   <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm w-full">
