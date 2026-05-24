@@ -1937,7 +1937,7 @@ export default function DashboardClient({
                                 {new Date(invoice.due_date).toLocaleDateString('en-GB')}
                               </td>
                               <td className="py-4 px-4 text-center">
-                                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-lg uppercase tracking-wider ${statusColor}`}>
+                                <span className={`px-2 py-0.5 text-[10px] font-bold rounded-lg uppercase tracking-wider whitespace-nowrap ${statusColor}`}>
                                   {invoice.status === 'PAID' ? t.invoiceStatusPaid : 
                                    isPartial ? (lang === 'so' ? 'Qayb Bixin' : 'PARTIAL') :
                                    isGracePeriod ? (lang === 'so' ? 'Waqti Baa U Haray' : 'GRACE PERIOD') :
@@ -1978,13 +1978,15 @@ export default function DashboardClient({
                                       </button>
                                     </div>
                                   )}
-                                  <button 
-                                    onClick={() => handlePrintInvoice(invoice)}
-                                    className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
-                                  >
-                                    <Printer className="w-3.5 h-3.5" />
-                                    <span>{t.printInvoiceBtn}</span>
-                                  </button>
+                                  {(invoice.status === 'PAID' || isPartial) && (
+                                    <button 
+                                      onClick={() => handlePrintInvoice(invoice)}
+                                      className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 rounded-lg text-xs font-bold transition-all flex items-center gap-1"
+                                    >
+                                      <Printer className="w-3.5 h-3.5" />
+                                      <span>{t.printInvoiceBtn}</span>
+                                    </button>
+                                  )}
                                 </div>
                               </td>
                             </tr>
