@@ -1191,7 +1191,7 @@ export default function DashboardClient({
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-[#f8fafc] flex relative text-slate-800">
+    <div className="h-screen w-full max-w-full overflow-hidden bg-[#f8fafc] flex relative text-slate-800">
       
       {/* Mobile Menu Backdrop */}
       {isMobileMenuOpen && (
@@ -2172,7 +2172,7 @@ export default function DashboardClient({
 
           {/* ================= SECTION 5: EXPENSES SECTION ================= */}
           {activeSection === 'expenses' && (
-            <div className="flex flex-col h-full bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="flex flex-col h-full w-full min-w-0 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
               <div className="p-6 border-b border-slate-100 shrink-0 bg-white z-10">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
@@ -2187,25 +2187,25 @@ export default function DashboardClient({
                 </div>
               </div>
 
-              <div className="flex-1 overflow-auto p-6 flex flex-col lg:flex-row gap-6">
+              <div className="flex-1 overflow-auto p-4 sm:p-6 flex flex-col lg:flex-row gap-6 w-full min-w-0">
                 {/* Left Side: Expenses Table */}
-                <div className="flex-1">
-                  <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
-                    <div className="overflow-x-auto">
+                <div className="flex-1 w-full min-w-0">
+                  <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm w-full">
+                    <div className="w-full overflow-x-auto">
                       <table className="w-full text-left text-sm text-slate-600">
                         <thead className="bg-slate-50 text-slate-500 uppercase text-[11px] font-extrabold tracking-wider border-b border-slate-100">
                           <tr>
-                            <th className="px-6 py-4">{lang === 'so' ? 'Taariikhda' : 'Date'}</th>
-                            <th className="px-6 py-4">{lang === 'so' ? 'Qaybta' : 'Category'}</th>
-                            <th className="px-6 py-4">{lang === 'so' ? 'Faahfaahin' : 'Description'}</th>
-                            <th className="px-6 py-4">{lang === 'so' ? 'Cadadka' : 'Amount'}</th>
-                            <th className="px-6 py-4 text-right">{lang === 'so' ? 'Tirtir' : 'Action'}</th>
+                            <th className="px-3 sm:px-6 py-4">{lang === 'so' ? 'Taariikhda' : 'Date'}</th>
+                            <th className="px-3 sm:px-6 py-4">{lang === 'so' ? 'Qaybta' : 'Category'}</th>
+                            <th className="px-3 sm:px-6 py-4">{lang === 'so' ? 'Faahfaahin' : 'Description'}</th>
+                            <th className="px-3 sm:px-6 py-4">{lang === 'so' ? 'Cadadka' : 'Amount'}</th>
+                            <th className="px-3 sm:px-6 py-4 text-right">{lang === 'so' ? 'Tirtir' : 'Action'}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50 font-medium">
                           {expenses.length === 0 ? (
                             <tr>
-                              <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                              <td colSpan={5} className="px-3 sm:px-6 py-12 text-center text-slate-400">
                                 <Wallet className="w-12 h-12 text-slate-200 mx-auto mb-3" />
                                 <p>{lang === 'so' ? 'Weli wax kharash ah lama gelinin.' : 'No expenses recorded yet.'}</p>
                               </td>
@@ -2213,21 +2213,21 @@ export default function DashboardClient({
                           ) : (
                             expenses.map((expense) => (
                               <tr key={expense.id} className="hover:bg-slate-50/50 transition-colors">
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                                   {new Date(expense.expense_date).toLocaleDateString('en-GB')}
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-3 sm:px-6 py-4">
                                   <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold border border-slate-200">
                                     {expense.category}
                                   </span>
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-3 sm:px-6 py-4">
                                   <span className="line-clamp-1">{expense.description}</span>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap font-extrabold text-red-600">
+                                <td className="px-3 sm:px-6 py-4 whitespace-nowrap font-extrabold text-red-600">
                                   -{formatCurrency(expense.amount, expense.currency_code)}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right">
+                                <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
                                   <form action={async () => {
                                     if(confirm(lang === 'so' ? 'Ma hubtaa inaad tirtirto kharashkan?' : 'Are you sure you want to delete this expense?')) {
                                       const { deleteExpenseAction } = await import('@/app/dashboard/actions');
