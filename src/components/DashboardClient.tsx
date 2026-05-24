@@ -2258,14 +2258,18 @@ export default function DashboardClient({
                     
                     <form action={async (formData) => {
                       const { addExpenseAction } = await import('@/app/dashboard/actions');
-                      await addExpenseAction(
+                      const res = await addExpenseAction(
                         Number(formData.get('amount')),
                         formData.get('category') as string,
                         formData.get('description') as string,
                         formData.get('expense_date') as string,
                         formData.get('currency_code') as string
                       );
-                      (document.getElementById('expense-form') as HTMLFormElement).reset();
+                      if (res?.error) {
+                        alert(lang === 'so' ? 'Cilad: ' + res.error : 'Error: ' + res.error);
+                      } else {
+                        (document.getElementById('expense-form') as HTMLFormElement).reset();
+                      }
                     }} id="expense-form" className="space-y-4">
                       
                       <div>

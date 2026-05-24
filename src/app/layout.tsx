@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import RegisterSW from "@/components/RegisterSW";
@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   title: "PropManage - Digital Rental Collection SaaS for Somaliland",
   description: "Nidaamka casriga ah ee maamulka guryaha iyo ururinta kirada ee Zaad iyo eDahab.",
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

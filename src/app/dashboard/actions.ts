@@ -165,7 +165,7 @@ export async function payInvoiceManuallyAction(
 export async function addExpenseAction(amount: number, category: string, description: string, expenseDate: string, currencyCode: string = 'USD') {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthorized')
+  if (!user) return { error: 'Unauthorized' }
 
   const { error } = await supabase
     .from('expenses')
@@ -178,8 +178,9 @@ export async function addExpenseAction(amount: number, category: string, descrip
       expense_date: expenseDate
     })
 
-  if (error) throw new Error(error.message)
+  if (error) return { error: error.message }
   revalidatePath('/dashboard')
+  return { success: true }
 }
 
 export async function deleteExpenseAction(expenseId: string) {
