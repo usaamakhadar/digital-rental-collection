@@ -662,7 +662,7 @@ export default function DashboardClient({
     const unitNo = invoice.unit_name_snapshot
     const amountStr = formatCurrency(invoice.amount, invoice.currency_code)
     const dueDate = new Date(invoice.due_date).toLocaleDateString('en-GB')
-    const billDate = new Date(invoice.created_at).toLocaleDateString('en-GB')
+    const billDate = new Date(new Date(invoice.created_at) > new Date(invoice.due_date) ? invoice.due_date : invoice.created_at).toLocaleDateString('en-GB')
     const isPartial = invoice.amount_paid > 0 && invoice.amount_paid < invoice.amount;
     const statusText = lang === 'so' 
       ? (invoice.status === 'PAID' ? 'LA BIXIYAY / PAID' : isPartial ? 'QAYB BIXIN / PARTIAL' : invoice.status === 'OVERDUE' ? 'DHAAFAY / OVERDUE' : 'WALI TAAGAN / PENDING')
@@ -1931,7 +1931,7 @@ export default function DashboardClient({
                                 )}
                               </td>
                               <td className="py-4 px-4 text-slate-400 font-medium font-sans text-right hidden lg:table-cell">
-                                {new Date(invoice.created_at).toLocaleDateString('en-GB')}
+                                {new Date(new Date(invoice.created_at) > new Date(invoice.due_date) ? invoice.due_date : invoice.created_at).toLocaleDateString('en-GB')}
                               </td>
                               <td className="py-4 px-4 text-slate-400 font-medium font-sans text-right hidden md:table-cell">
                                 {new Date(invoice.due_date).toLocaleDateString('en-GB')}
