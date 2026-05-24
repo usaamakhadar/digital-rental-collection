@@ -112,7 +112,19 @@ CREATE TABLE payments (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 9. Audit Logs (SaaS Compliance)
+-- 9. Expenses (Operating costs)
+CREATE TABLE expenses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  landlord_id UUID NOT NULL REFERENCES landlords(id) ON DELETE CASCADE,
+  amount NUMERIC(12, 2) NOT NULL,
+  currency_code VARCHAR(3) DEFAULT 'USD',
+  category VARCHAR(50) NOT NULL,
+  description TEXT,
+  expense_date DATE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 10. Audit Logs (SaaS Compliance)
 CREATE TABLE audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,

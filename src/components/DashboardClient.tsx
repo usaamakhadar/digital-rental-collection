@@ -682,7 +682,12 @@ export default function DashboardClient({
       <html>
         <head>
           <title>Rasiidhka Biilka - ${tenantName}</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
           <style>
+            @media print {
+              .no-print { display: none !important; }
+              body { margin: 0; }
+            }
             @page {
               size: auto;
               margin: 10mm;
@@ -830,6 +835,10 @@ export default function DashboardClient({
           </style>
         </head>
         <body>
+          <div class="no-print" style="padding: 15px; text-align: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;">
+            <button onclick="window.close()" style="padding: 10px 15px; background: #dc2626; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; margin-right: 10px; cursor: pointer;">⬅ Xir (Close)</button>
+            <button onclick="window.print()" style="padding: 10px 15px; background: #0066cc; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer;">🖨 Daabac (Print)</button>
+          </div>
           <div class="invoice-card">
             <div class="header">
               <div class="company-info">
@@ -928,7 +937,12 @@ export default function DashboardClient({
       <html>
         <head>
           <title>Heshiiska Kirada - ${tenantName}</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
           <style>
+            @media print {
+              .no-print { display: none !important; }
+              body { margin: 0; background-color: #ffffff; }
+            }
             @page {
               size: A4;
               margin: 10mm;
@@ -945,6 +959,8 @@ export default function DashboardClient({
               border: 3px double #000000;
               padding: 20px;
               box-sizing: border-box;
+              max-width: 800px;
+              margin: 0 auto;
             }
             .header {
               text-align: center;
@@ -1042,6 +1058,10 @@ export default function DashboardClient({
           </style>
         </head>
         <body>
+          <div class="no-print" style="padding: 15px; text-align: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px;">
+            <button onclick="window.close()" style="padding: 10px 20px; background: #dc2626; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; margin-right: 10px; cursor: pointer;">⬅ Ku Noqo Dashboard-ka (Back)</button>
+            <button onclick="window.print()" style="padding: 10px 20px; background: #0066cc; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer;">🖨 Daabac (Print)</button>
+          </div>
           <div class="border-outer">
             <div class="header">
               <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px;">
