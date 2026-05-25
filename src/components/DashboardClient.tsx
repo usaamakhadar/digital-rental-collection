@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { createProperty, createUnit, createTenantAndLease, terminateLease, updateLandlordProfile, generateInvoicesAction, payInvoiceManuallyAction } from '@/app/dashboard/actions'
 import { 
   Building2, 
@@ -31,7 +32,8 @@ import {
   Download,
   Menu,
   Copy,
-  Wallet
+  Wallet,
+  RefreshCw
 } from 'lucide-react'
 
 interface Property {
@@ -84,7 +86,7 @@ const translations = {
     emergencyNameLabel: "Magaca Damiinka / Qofka labaad",
     emergencyPhoneLabel: "Telefoonka Damiinka / Qofka labaad",
     emergencyContactTh: "Damiinka / Lala Xidhiidho",
-    vacantUnit: "Qolka Bannaan",
+    vacantUnit: "Guryaha banaan",
     selectUnit: "Dooro Qol",
     noVacantUnits: "Guri/Qol ma jiro. Marka hore ku dar dhisme iyo qol!",
     leaseStart: "Bilowga Kirada",
@@ -92,7 +94,7 @@ const translations = {
     activeLeases: "Heshiisyada Kirada Firfircoon",
     realtimeOccupancy: "Xogta degenaanshaha ee hadda",
     tenantNameTh: "Magaca Kiraystaha",
-    unitTh: "Qolka",
+    unitTh: "Guriga",
     rentAmountTh: "Kirada",
     leaseStartTh: "Bilowga",
     statusTh: "Status-ka",
@@ -321,6 +323,17 @@ export default function DashboardClient({
   payments = [],
   expenses = []
 }: DashboardClientProps) {
+  const router = useRouter()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const handleManualRefresh = () => {
+    setIsRefreshing(true)
+    router.refresh()
+    setTimeout(() => {
+      setIsRefreshing(false)
+    }, 800)
+  }
+
   // Navigation states
   const [activeSection, setActiveSection] = useState<'dashboard' | 'properties' | 'tenants' | 'invoices' | 'payments' | 'expenses' | 'reports' | 'settings'>('dashboard')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -521,6 +534,7 @@ export default function DashboardClient({
       await createProperty(formData)
       setIsPropertyModalOpen(false)
       form.reset()
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -538,6 +552,7 @@ export default function DashboardClient({
       await createUnit(formData)
       setIsUnitModalOpen(false)
       form.reset()
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -555,6 +570,7 @@ export default function DashboardClient({
       await createTenantAndLease(formData)
       form.reset()
       alert(t.successMsg)
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -568,6 +584,7 @@ export default function DashboardClient({
     setError(null)
     try {
       await terminateLease(leaseId, unitId)
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -584,6 +601,7 @@ export default function DashboardClient({
     try {
       await updateLandlordProfile(formData)
       alert(t.settingsSuccess)
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -598,6 +616,7 @@ export default function DashboardClient({
     try {
       const count = await generateInvoicesAction()
       alert(lang === 'so' ? `Si guul leh ayaa loo dhaliyay ${count} biilal!` : `Successfully generated ${count} invoices!`)
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -648,6 +667,7 @@ export default function DashboardClient({
       setSelectedInvoiceId(null)
       setProviderTransactionId('')
       setPaymentAmount('')
+      router.refresh()
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -1120,6 +1140,7 @@ export default function DashboardClient({
                 <li><strong>Bixinta Kirada (Payment):</strong> Kiraystuhu wuxuu ogolaaday inuu bixiyo kirada dhan $${rent} USD bishiiba, taasoo lagu bixin doono Zaad/eDahab muddo 5 maalmood gudahood ah laga bilaabo kowda bisha.</li>
                 <li><strong>Heshiiska Bilowga (Lease Term):</strong> Heshiiskani wuxuu bilaabmayaa taariikhda <strong>${startDate}</strong> wuxuuna shaqaynayaa ilaa inta labada dhinac midkood soo codsanayo joojinta heshiiska muddo 30 maalmood ka hor.</li>
                 <li><strong>Masuuliyadda Dhismaha (Use & Care):</strong> Kiraystuhu waa inuu ku hayo dhismaha nadaafad iyo badbaado. Wixii dayactir ee ka yimaada isticmaalka kiraystaha isaga ayaa bixinaya, wixii dayactir dabiici ah ee dhismaha ku saabsan waxaa bixinaya Mulkiilaha.</li>
+                <li><strong>Mabnuucida Sii-kiraynta (No Subleasing):</strong> Kiraystuhu ma sii kirayn karo dhismaha/qolka gacan saddexaad (third party) ama qof kale oo aan ku jirin heshiiska, isagoon fasax qoraal ah ka helin Mulkiilaha. / The tenant is strictly prohibited from subleasing, transferring, or sharing the property with a third party without the prior written consent of the Landlord.</li>
                 <li><strong>Sharciga Dalka (Governing Law):</strong> Heshiiskan waxaa maamulaya shuruucda dhulka ee Jamhuuriyadda Somaliland, wixii khilaaf ah ee ka yimaadana waxaa lagu xalin doonaa maxkamadaha dalka ama odayaal dhaqameed.</li>
               </ol>
             </div>
@@ -1390,6 +1411,15 @@ export default function DashboardClient({
                 <span>ENG</span>
               </button>
             </div>
+
+            {/* MANUAL REFRESH BUTTON */}
+            <button
+              onClick={handleManualRefresh}
+              title={lang === 'so' ? 'Cusboonaysii Xogta' : 'Refresh Data'}
+              className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-50 transition-all flex items-center justify-center"
+            >
+              <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin text-[#0066cc]' : ''}`} />
+            </button>
 
             <button className="relative p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-50 transition-all">
               <Bell className="w-5 h-5" />
@@ -2234,6 +2264,7 @@ export default function DashboardClient({
                                     if(confirm(lang === 'so' ? 'Ma hubtaa inaad tirtirto kharashkan?' : 'Are you sure you want to delete this expense?')) {
                                       const { deleteExpenseAction } = await import('@/app/dashboard/actions');
                                       await deleteExpenseAction(expense.id);
+                                      router.refresh();
                                     }
                                   }}>
                                     <button type="submit" className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded-lg transition-colors">
@@ -2271,6 +2302,7 @@ export default function DashboardClient({
                         alert(lang === 'so' ? 'Cilad: ' + res.error : 'Error: ' + res.error);
                       } else {
                         (document.getElementById('expense-form') as HTMLFormElement).reset();
+                        router.refresh();
                       }
                     }} id="expense-form" className="space-y-4">
                       

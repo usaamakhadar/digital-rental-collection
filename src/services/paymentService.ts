@@ -22,7 +22,7 @@ export class PaymentService {
     // 2. Fetch invoice amount
     const { data: invoice, error: invoiceError } = await supabase
       .from('invoices')
-      .select('amount, status, amount_paid')
+      .select('amount, status, amount_paid, currency_code, organization_id')
       .eq('id', invoiceId)
       .single()
 
@@ -68,11 +68,12 @@ export class PaymentService {
     const { error: paymentError } = await supabase
       .from('payments')
       .insert({
+        organization_id: invoice.organization_id,
         invoice_id: invoiceId,
         amount: actualPaymentAmount,
+        currency_code: invoice.currency_code || 'USD',
         payment_method: method,
-        provider_transaction_id: cleanTxId,
-        processed_by_landlord: userId
+        provider_transaction_id: cleanTxId
       })
 
     if (paymentError) {
