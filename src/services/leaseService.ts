@@ -40,6 +40,19 @@ export class LeaseService {
       throw new Error('Qolkan mar hore ayaa la kireeyay! Fadlan dooro qol kale.')
     }
 
+    // 2b. Concurrency Guard: Atomically lock the unit by setting status = 'OCCUPIED' WHERE status = 'VACANT'
+    const { data: lockedUnit, error: lockError } = await supabase
+      .from('units')
+      .update({ status: 'OCCUPIED' })
+      .eq('id', unitId)
+      .eq('status', 'VACANT')
+      .select()
+      .maybeSingle()
+
+    if (lockError || !lockedUnit) {
+      throw new Error('Qolkan mar hore ayaa la kireeyay! Fadlan dooro qol kale.')
+    }
+
     let tenantId: string | null = null
     let leaseId: string | null = null
 
@@ -80,17 +93,7 @@ export class LeaseService {
       }
       leaseId = lease.id
 
-      // 5. Update Unit Status to OCCUPIED
-      const { error: unitUpdateError } = await supabase
-        .from('units')
-        .update({ status: 'OCCUPIED' })
-        .eq('id', unitId)
-
-      if (unitUpdateError) {
-        throw new Error(`Ku guuldareystay bedelida xaalada qolka: ${unitUpdateError.message}`)
-      }
-
-      // 6. Generate First Month Invoice with Snapshots
+      // 5. Generate First Month Invoice with Snapshots (unit status already set to OCCUPIED)
       const { error: invoiceError } = await supabase
         .from('invoices')
         .insert({
@@ -118,8 +121,11 @@ export class LeaseService {
       // Rollback attempts to keep DB clean on failure
       if (leaseId) {
         await supabase.from('leases').delete().eq('id', leaseId)
-        await supabase.from('units').update({ status: 'VACANT' }).eq('id', unitId)
       }
+      
+      // Always reset unit status to VACANT on failure since we locked it at the start
+      await supabase.from('units').update({ status: 'VACANT' }).eq('id', unitId)
+      
       if (tenantId) {
         await supabase.from('tenants').delete().eq('id', tenantId)
       }

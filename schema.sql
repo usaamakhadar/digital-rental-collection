@@ -36,6 +36,7 @@ CREATE TABLE landlords (
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   business_name VARCHAR(255),
   phone VARCHAR(50),
+  avatar_url TEXT, -- Profile photo URL (Supabase Storage)
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -87,6 +88,7 @@ CREATE TABLE invoices (
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   lease_id UUID NOT NULL REFERENCES leases(id) ON DELETE CASCADE,
   amount NUMERIC(12, 2) NOT NULL,
+  amount_paid NUMERIC(12, 2) DEFAULT 0, -- Tracks partial payments
   currency_code VARCHAR(10) DEFAULT 'USD',
   status VARCHAR(20) DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'PAID', 'OVERDUE')),
   due_date DATE NOT NULL,
