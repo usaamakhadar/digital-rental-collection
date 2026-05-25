@@ -87,7 +87,7 @@ const translations = {
     emergencyPhoneLabel: "Telefoonka Damiinka / Qofka labaad",
     emergencyContactTh: "Damiinka / Lala Xidhiidho",
     vacantUnit: "Guryaha banaan",
-    selectUnit: "Dooro Qol",
+    selectUnit: "Dooro Guri",
     noVacantUnits: "Guri/Qol ma jiro. Marka hore ku dar dhisme iyo qol!",
     leaseStart: "Bilowga Kirada",
     createLeaseBtn: "Abuur Heshiiska Kirada",
