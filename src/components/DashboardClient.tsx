@@ -531,10 +531,14 @@ export default function DashboardClient({
     setError(null)
     const formData = new FormData(form)
     try {
-      await createProperty(formData)
-      setIsPropertyModalOpen(false)
-      form.reset()
-      router.refresh()
+      const res = await createProperty(formData)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        setIsPropertyModalOpen(false)
+        form.reset()
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -549,10 +553,14 @@ export default function DashboardClient({
     setError(null)
     const formData = new FormData(form)
     try {
-      await createUnit(formData)
-      setIsUnitModalOpen(false)
-      form.reset()
-      router.refresh()
+      const res = await createUnit(formData)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        setIsUnitModalOpen(false)
+        form.reset()
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -567,10 +575,14 @@ export default function DashboardClient({
     setError(null)
     const formData = new FormData(form)
     try {
-      await createTenantAndLease(formData)
-      form.reset()
-      alert(t.successMsg)
-      router.refresh()
+      const res = await createTenantAndLease(formData)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        form.reset()
+        alert(t.successMsg)
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -583,8 +595,12 @@ export default function DashboardClient({
     setLoading(true)
     setError(null)
     try {
-      await terminateLease(leaseId, unitId)
-      router.refresh()
+      const res = await terminateLease(leaseId, unitId)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -599,9 +615,13 @@ export default function DashboardClient({
     setError(null)
     const formData = new FormData(form)
     try {
-      await updateLandlordProfile(formData)
-      alert(t.settingsSuccess)
-      router.refresh()
+      const res = await updateLandlordProfile(formData)
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        alert(t.settingsSuccess)
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -614,9 +634,13 @@ export default function DashboardClient({
     setLoading(true)
     setError(null)
     try {
-      const count = await generateInvoicesAction()
-      alert(lang === 'so' ? `Si guul leh ayaa loo dhaliyay ${count} biilal!` : `Successfully generated ${count} invoices!`)
-      router.refresh()
+      const res = await generateInvoicesAction()
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        alert(lang === 'so' ? `Si guul leh ayaa loo dhaliyay ${res.count} biilal!` : `Successfully generated ${res.count} invoices!`)
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -659,15 +683,19 @@ export default function DashboardClient({
     setLoading(true)
     setError(null)
     try {
-      const txnId = await payInvoiceManuallyAction(selectedInvoiceId, paymentMethod, providerTransactionId, Number(paymentAmount))
-      alert(lang === 'so' 
-        ? `Lacagta si guul leh ayaa loo kaydiyay! ID-ga rasiidhka: ${txnId}` 
-        : `Payment recorded successfully! Txn ID: ${txnId}`)
-      setIsPaymentModalOpen(false)
-      setSelectedInvoiceId(null)
-      setProviderTransactionId('')
-      setPaymentAmount('')
-      router.refresh()
+      const res = await payInvoiceManuallyAction(selectedInvoiceId, paymentMethod, providerTransactionId, Number(paymentAmount))
+      if (res?.error) {
+        setError(res.error)
+      } else {
+        alert(lang === 'so' 
+          ? `Lacagta si guul leh ayaa loo kaydiyay! ID-ga rasiidhka: ${res.txnId}` 
+          : `Payment recorded successfully! Txn ID: ${res.txnId}`)
+        setIsPaymentModalOpen(false)
+        setSelectedInvoiceId(null)
+        setProviderTransactionId('')
+        setPaymentAmount('')
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
